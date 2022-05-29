@@ -40,7 +40,9 @@
 #include "router_globals.h"
 
 // On board LED
-#define BLINK_GPIO 2
+//#define BLINK_GPIO 2
+// different Pin for external LED: GPIO 23
+#define BLINK_GPIO 23
 
 /* FreeRTOS event group to signal when we are connected*/
 static EventGroupHandle_t wifi_event_group;
@@ -295,17 +297,34 @@ void * led_status_thread(void * p)
 
     while (true)
     {
+        // constant light if STA connection established
         gpio_set_level(BLINK_GPIO, ap_connect);
-
+        vTaskDelay( 2000 / portTICK_PERIOD_MS );
+        // blink number of AP connections
         for (int i = 0; i < connect_count; i++)
         {
             gpio_set_level(BLINK_GPIO, 1 - ap_connect);
-            vTaskDelay(50 / portTICK_PERIOD_MS);
+            vTaskDelay(250 / portTICK_PERIOD_MS);
             gpio_set_level(BLINK_GPIO, ap_connect);
-            vTaskDelay(50 / portTICK_PERIOD_MS);
+            vTaskDelay(250 / portTICK_PERIOD_MS);
         }
+        vTaskDelay( 2000 / portTICK_PERIOD_MS );
 
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        if (ap_connect)
+        {
+            vTaskDelay( 2000 / portTICK_PERIOD_MS );
+        }
+        else
+        {
+            // slow flashing if looking for STA connection
+            for (int i = 0; i < 4; i++)
+            {
+                gpio_set_level(BLINK_GPIO, 1);
+                vTaskDelay(500 / portTICK_PERIOD_MS);
+                gpio_set_level(BLINK_GPIO, 0);
+                vTaskDelay(500 / portTICK_PERIOD_MS);
+            }
+        }
     }
 }
 
