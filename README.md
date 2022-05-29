@@ -64,10 +64,13 @@ Two devices are connected to the ESP32, but the ESP32 is not connected to upstre
 
 if the upstram AP (STA) is not connected it now flashes 4 times (half freq.) and then repeats this cycle.
 
-<-2sec-> flashes <-2sec-> <- 4 no STA flashes ~ 4 s->
-...........*.*............**..**..**..**..  (no STA, 2 devices connected)
-<-2sec-> flashes <- 3sec    ->
-***********.*.****************  (STA connection, 2 devices)
+`<-2sec-> flashes <-2sec-> <- 4 no STA flashes ~ 4 s->`
+
+`...........*.*............**..**..**..**..`  (no STA, 2 devices connected)
+
+`<-2sec-> flashes <- 3sec    ->`
+
+`***********.*.****************`  (STA connection, 2 devices)
 
 # Command Line Interface
 
