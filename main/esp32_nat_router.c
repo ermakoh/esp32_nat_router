@@ -295,11 +295,18 @@ void * led_status_thread(void * p)
     gpio_reset_pin(BLINK_GPIO);
     gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
 
+    // blink timing, now for human eyes and brains:
+    // status STA - 2 seconds delay
+    // blink attached devices - 250ms/250ms
+    // status STA - 2 seconds delay
+    // blink missing STA - 500ms/500ms (4s) else 1 add sec delay 
     while (true)
     {
         // constant light if STA connection established
         gpio_set_level(BLINK_GPIO, ap_connect);
+        
         vTaskDelay( 2000 / portTICK_PERIOD_MS );
+        
         // blink number of AP connections
         for (int i = 0; i < connect_count; i++)
         {
@@ -308,11 +315,12 @@ void * led_status_thread(void * p)
             gpio_set_level(BLINK_GPIO, ap_connect);
             vTaskDelay(250 / portTICK_PERIOD_MS);
         }
+
         vTaskDelay( 2000 / portTICK_PERIOD_MS );
 
         if (ap_connect)
         {
-            vTaskDelay( 2000 / portTICK_PERIOD_MS );
+            vTaskDelay( 1000 / portTICK_PERIOD_MS );
         }
         else
         {
